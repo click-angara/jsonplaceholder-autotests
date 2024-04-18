@@ -28,6 +28,45 @@ public class GetPostsTests {
     }
 
     @Test
+    public void listPost() throws Exception {
+        Long id = 3L;
+        Response response = postsApiService.getPosts();
+
+        PostModel responseBody = Stream.of(response.getBody().as(PostModel[].class))
+                .filter(post -> post.getId().equals(3L))
+                .findAny()
+                .orElseThrow(() -> new Exception(
+                        String.format("Not found post with id = %s in response", id)));
+
+        PostModel expectedResponseId3 = PostModel.builder()
+                .userId(1L)
+                .id(3L)
+                .title("ea molestias quasi exercitationem repellat qui ipsa sit aut")
+                .body("""
+                        et iusto sed quo iure
+                        voluptatem occaecati omnis eligendi aut ad
+                        voluptatem doloribus vel accusantium quis pariatur
+                        molestiae porro eius odio et labore et velit aut""")
+                .build();
+
+        Assertions.assertAll(
+                () -> assertThat(response.getStatusCode(), equalTo(OK)),
+                () -> assertThat(responseBody, equalTo(expectedResponseId3)));
+    }
+
+    @Test
+    public void lengthListPost() {
+        int expectedLength = 100;
+
+        Response response = postsApiService.getPosts();
+        int lengthResponseBody = response.getBody().as(PostModel[].class).length;
+
+        Assertions.assertAll(
+                () -> assertThat(response.getStatusCode(), equalTo(OK)),
+                () -> assertThat(lengthResponseBody, equalTo(expectedLength)));
+    }
+
+    @Test
     public void existPostById() {
         Response response = postsApiService.getPostsById(1L);
         PostModel responseBody = response.getBody().as(PostModel.class);
@@ -45,25 +84,24 @@ public class GetPostsTests {
 
         Assertions.assertAll(
                 () -> assertThat(response.getStatusCode(), equalTo(OK)),
-                () -> assertThat(responseBody.getUserId(), equalTo(expectedResponse.getUserId())),
-                () -> assertThat(responseBody.getId(), equalTo(expectedResponse.getId())),
-                () -> assertThat(responseBody.getTitle(), equalTo(expectedResponse.getTitle())),
-                () -> assertThat(responseBody.getBody(), equalTo(expectedResponse.getBody())));
+                () -> assertThat(responseBody, equalTo(expectedResponse)));
     }
 
     @Test
     public void existCommentsById() throws Exception {
         Long postId = 1L;
+        Long id = 5L;
 
         Response response = postsApiService.getPostsCommentsById(postId);
         CommentModel responseBody = Stream.of(response.getBody().as(CommentModel[].class))
-                .filter(comment -> comment.getId().equals(5L))
+                .filter(comment -> comment.getId().equals(id))
                 .findAny()
                 .orElseThrow(() -> new Exception(
-                        String.format("Not found comment with id = %s in response", postId)));
+                        String.format("Not found comment with id = %s in response", id)));
 
         CommentModel expectedResponseId5 = CommentModel.builder()
                 .postId(postId)
+                .id(id)
                 .name("vero eaque aliquid doloribus et culpa")
                 .email("Hayden@althea.biz")
                 .body("""
@@ -75,10 +113,7 @@ public class GetPostsTests {
 
         Assertions.assertAll(
                 () -> assertThat(response.getStatusCode(), equalTo(OK)),
-                () -> assertThat(responseBody.getPostId(), equalTo(expectedResponseId5.getPostId())),
-                () -> assertThat(responseBody.getName(), equalTo(expectedResponseId5.getName())),
-                () -> assertThat(responseBody.getEmail(), equalTo(expectedResponseId5.getEmail())),
-                () -> assertThat(responseBody.getBody(), equalTo(expectedResponseId5.getBody())));
+                () -> assertThat(responseBody, equalTo(expectedResponseId5)));
     }
 
     @Test
