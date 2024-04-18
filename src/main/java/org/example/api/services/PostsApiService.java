@@ -13,6 +13,16 @@ public class PostsApiService {
 
     private static final String baseUrl = "https://jsonplaceholder.typicode.com";
 
+    public Response getPosts() {
+        RestAssured.baseURI = baseUrl;
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/posts")
+                .then()
+                .extract().response();
+    }
+
     public Response getPostsById(Long id) {
         RestAssured.baseURI = baseUrl;
         return given()

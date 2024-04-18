@@ -11,7 +11,7 @@ import static org.example.api.constant.StatusCode.CREATED;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-public class PostPostsTests {
+public class CreatePostsTests {
     private static PostsApiService postsApiService;
 
     @BeforeAll
@@ -38,22 +38,4 @@ public class PostPostsTests {
 
     }
 
-    @Test
-    public void successUpdatePosts() {
-        PostModel request = PostModel.builder()
-                .id(2L)
-                .userId(1L)
-                .title("foo")
-                .body("bar")
-                .build();
-
-        Response response = postsApiService.postPosts(request);
-        PostModel responseBody = response.getBody().as(PostModel.class);
-
-        Assertions.assertAll(
-                () -> assertThat(response.getStatusCode(), equalTo(CREATED)),
-                () -> assertThat(responseBody.getUserId(), equalTo(request.getUserId())),
-                () -> assertThat(responseBody.getTitle(), equalTo(request.getTitle())),
-                () -> assertThat(responseBody.getBody(), equalTo(request.getBody())));
-    }
 }
