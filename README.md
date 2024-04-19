@@ -13,3 +13,5 @@ https://jsonplaceholder.typicode.com
 ### Running tests
  - Running all tests `./gradlew clean test`
 
+### Task 2
+- CalculatorCountWords.class
