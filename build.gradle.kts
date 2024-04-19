@@ -20,6 +20,8 @@ dependencies {
     testImplementation("io.rest-assured:rest-assured:5.4.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.16.1")
     testImplementation("junit:junit:4.13.2")
+
+    testImplementation("com.google.guava:guava:33.0.0-jre")
 }
 
 tasks.test {
