@@ -1,5 +1,8 @@
 package api;
 
+import io.qameta.allure.Allure;
+import io.qameta.allure.AllureId;
+import io.qameta.allure.Story;
 import io.restassured.response.Response;
 import org.example.api.services.PostsApiService;
 import org.example.model.CommentModel;
@@ -7,6 +10,7 @@ import org.example.model.ErrorModel;
 import org.example.model.PostModel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.stream.Stream;
@@ -16,9 +20,9 @@ import static org.example.api.constant.StatusCode.OK;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-
+@DisplayName("Jsonplaceholder API")
+@Story("Get Posts Operations")
 public class GetPostsTests {
-
 
     private static PostsApiService postsApiService;
 
@@ -28,6 +32,8 @@ public class GetPostsTests {
     }
 
     @Test
+    @AllureId("0004")
+    @DisplayName("Check success response body element listing all resources")
     public void listPost() throws Exception {
         Long id = 3L;
         Response response = postsApiService.getPosts();
@@ -49,24 +55,32 @@ public class GetPostsTests {
                         molestiae porro eius odio et labore et velit aut""")
                 .build();
 
-        Assertions.assertAll(
-                () -> assertThat(response.getStatusCode(), equalTo(OK)),
-                () -> assertThat(responseBody, equalTo(expectedResponseId3)));
+        Allure.step("Check response GET: /posts", () -> {
+            Assertions.assertAll(
+                    () -> assertThat(response.getStatusCode(), equalTo(OK)),
+                    () -> assertThat(responseBody, equalTo(expectedResponseId3)));
+        });
     }
 
     @Test
+    @AllureId("0005")
+    @DisplayName("Check success length listing all resources")
     public void lengthListPost() {
         int expectedLength = 100;
 
         Response response = postsApiService.getPosts();
         int lengthResponseBody = response.getBody().as(PostModel[].class).length;
 
-        Assertions.assertAll(
-                () -> assertThat(response.getStatusCode(), equalTo(OK)),
-                () -> assertThat(lengthResponseBody, equalTo(expectedLength)));
+        Allure.step("Check response GET: /posts", () -> {
+            Assertions.assertAll(
+                    () -> assertThat(response.getStatusCode(), equalTo(OK)),
+                    () -> assertThat(lengthResponseBody, equalTo(expectedLength)));
+        });
     }
 
     @Test
+    @AllureId("0006")
+    @DisplayName("Check success response getting exist resource")
     public void existPostById() {
         Response response = postsApiService.getPostsById(1L);
         PostModel responseBody = response.getBody().as(PostModel.class);
@@ -82,12 +96,16 @@ public class GetPostsTests {
                         nostrum rerum est autem sunt rem eveniet architecto""")
                 .build();
 
-        Assertions.assertAll(
-                () -> assertThat(response.getStatusCode(), equalTo(OK)),
-                () -> assertThat(responseBody, equalTo(expectedResponse)));
+        Allure.step("Check response GET: /posts/{id}", () -> {
+            Assertions.assertAll(
+                    () -> assertThat(response.getStatusCode(), equalTo(OK)),
+                    () -> assertThat(responseBody, equalTo(expectedResponse)));
+        });
     }
 
     @Test
+    @AllureId("0007")
+    @DisplayName("Check success response getting comments exist resource")
     public void existCommentsById() throws Exception {
         Long postId = 1L;
         Long id = 5L;
@@ -111,12 +129,16 @@ public class GetPostsTests {
                         voluptates magni quo et""")
                 .build();
 
-        Assertions.assertAll(
-                () -> assertThat(response.getStatusCode(), equalTo(OK)),
-                () -> assertThat(responseBody, equalTo(expectedResponseId5)));
+        Allure.step("Check response GET: /posts/{id}", () -> {
+            Assertions.assertAll(
+                    () -> assertThat(response.getStatusCode(), equalTo(OK)),
+                    () -> assertThat(responseBody, equalTo(expectedResponseId5)));
+        });
     }
 
     @Test
+    @AllureId("0008")
+    @DisplayName("Check success length getting comments resources")
     public void lengthCommentsById() {
         Long postId = 2L;
         int expectedLength = 5;
@@ -124,33 +146,43 @@ public class GetPostsTests {
         Response response = postsApiService.getPostsCommentsById(postId);
         int lengthResponseBody = response.getBody().as(CommentModel[].class).length;
 
-        Assertions.assertAll(
-                () -> assertThat(response.getStatusCode(), equalTo(OK)),
-                () -> assertThat(lengthResponseBody, equalTo(expectedLength)));
+        Allure.step("Check response GET: /posts/{id}/comments", () -> {
+            Assertions.assertAll(
+                    () -> assertThat(response.getStatusCode(), equalTo(OK)),
+                    () -> assertThat(lengthResponseBody, equalTo(expectedLength)));
+        });
     }
 
     @Test
+    @AllureId("0009")
+    @DisplayName("Check success response getting not exist post resources")
     public void notExistPostById() {
         Response response = postsApiService.getPostsById(1456778L);
         ErrorModel responseBody = response.getBody().as(ErrorModel.class);
 
         ErrorModel expectedResponse = ErrorModel.builder().build();
 
-        Assertions.assertAll(
-                () -> assertThat(response.getStatusCode(), equalTo(NOT_FOUND)),
-                () -> assertThat(responseBody, equalTo(expectedResponse))
-        );
+        Allure.step("Check response GET: /posts/{id}", () -> {
+            Assertions.assertAll(
+                    () -> assertThat(response.getStatusCode(), equalTo(NOT_FOUND)),
+                    () -> assertThat(responseBody, equalTo(expectedResponse))
+            );
+        });
     }
 
     @Test
+    @AllureId("0010")
+    @DisplayName("Check success  response getting not exist comments resources")
     public void notExistCommentsById() {
         Response response = postsApiService.getPostsCommentsById(1456778L);
         ErrorModel[] responseBody = response.getBody().as(ErrorModel[].class);
 
-        Assertions.assertAll(
-                () -> assertThat(response.getStatusCode(), equalTo(OK)),
-                () -> assertThat(responseBody, equalTo(new ErrorModel[]{}))
-        );
+        Allure.step("Check response GET: /posts/{id}/comments", () -> {
+            Assertions.assertAll(
+                    () -> assertThat(response.getStatusCode(), equalTo(OK)),
+                    () -> assertThat(responseBody, equalTo(new ErrorModel[]{}))
+            );
+        });
     }
 
 }

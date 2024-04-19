@@ -54,7 +54,6 @@ public class PostsApiService {
                 .extract().response();
     }
 
-
     public Response deletePosts(Long id) {
         RestAssured.baseURI = baseUrl;
         return given()
