@@ -8,6 +8,7 @@ https://jsonplaceholder.typicode.com
  - Gradle 8.5
  - JUnit5
  - RestAssures
+ - Allure
 
 ### Running tests
  - Running all tests `./gradlew clean test`
